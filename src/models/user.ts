@@ -1,8 +1,10 @@
 import { Document, Model, model, Schema } from 'mongoose';
+import { nanoid } from 'nanoid';
 import bcrypt from 'bcrypt';
 import { ERROR_MESSAGES } from '../constants';
 
 type Profile = {
+	_id: string;
 	name: string;
 	avatar: string;
 };
@@ -21,6 +23,8 @@ export interface UserModel extends Model<UserDocument> {
 	checkAvailability(value: string, type: string): boolean;
 	getUserById(id: string): Promise<UserDocument>;
 	getUsers(): Promise<UserDocument>;
+	upsertProfile(id: string, newProfile: Profile): Promise<UserDocument>;
+	deleteProfile(id: string, profileId: string): Promise<UserDocument>;
 	findByLogin(login: string): Promise<UserDocument>;
 	deleteUserById(id: string): Promise<UserDocument>;
 }
@@ -43,11 +47,17 @@ const userSchema = new Schema<UserDocument>(
 		},
 		profiles: [
 			{
+				_id: {
+					type: String,
+					default: () => nanoid()
+				},
 				name: {
-					type: String
+					type: String,
+					required: true
 				},
 				avatar: {
-					type: String
+					type: String,
+					required: true
 				}
 			}
 		]
@@ -87,6 +97,34 @@ userSchema.statics.getUserById = async function(this: Model<UserDocument>, id: s
 userSchema.statics.getUsers = async function(this: Model<UserDocument>) {
 	try {
 		return await this.find({}, { password: 0 });
+	} catch (error) {
+		throw error;
+	}
+};
+
+userSchema.statics.upsertProfile = async function(this: Model<UserDocument>, id: string, newProfile: Profile) {
+	try {
+		const user = await this.findOne({ _id: id }, { password: 0 });
+		if (!user) throw { error: ERROR_MESSAGES.USER_NOT_FOUND };
+		if (newProfile._id) {
+			const profileIndex = user.profiles.findIndex((profile) => profile._id === newProfile._id);
+			user.profiles[profileIndex] = newProfile;
+		} else {
+			user.profiles.push({ ...newProfile });
+		}
+		return await user.save();
+	} catch (error) {
+		throw error;
+	}
+};
+
+userSchema.statics.deleteProfile = async function(this: Model<UserDocument>, id: string, profileId: string) {
+	try {
+		const user = await this.findOne({ _id: id }, { password: 0 });
+		if (!user) throw { error: ERROR_MESSAGES.USER_NOT_FOUND };
+		const profileIndex = user.profiles.findIndex((profile) => profile._id === profileId);
+		user.profiles.splice(profileIndex, 1);
+		return await user.save();
 	} catch (error) {
 		throw error;
 	}

@@ -1,7 +1,7 @@
 import express from 'express';
 import User from '../models/user';
 import user from '../controllers/user';
-import { encode } from '../middlewares/jwt';
+import { encode, decode } from '../middlewares/jwt';
 
 const router = express.Router();
 router.get('/', async (req: any, res: any) => {
@@ -20,5 +20,7 @@ router.post('/signin', encode, async (req: any, res: any, next: any) => {
 	});
 });
 router.post('/users/checkAvailability', user.onCheckAvailability);
+router.post('/users/upsertProfile', decode, user.onUpsertProfile);
+router.post('/users/deleteProfile', decode, user.onDeleteProfile);
 
 export default router;

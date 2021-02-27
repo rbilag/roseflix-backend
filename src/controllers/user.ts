@@ -23,7 +23,27 @@ export default {
 		try {
 			let { value, type } = req.body;
 			const isAvailable = await User.checkAvailability(value, type);
-			return res.status(201).json({ success: true, isAvailable });
+			return res.status(200).json({ success: true, isAvailable });
+		} catch (error) {
+			console.log(error);
+			return res.status(400).json({ success: false, error: error.message });
+		}
+	},
+	onUpsertProfile: async (req: any, res: any) => {
+		try {
+			let { newProfile } = req.body;
+			const updatedUser = await User.upsertProfile(req.userId, newProfile);
+			return res.status(200).json({ success: true, user: updatedUser });
+		} catch (error) {
+			console.log(error);
+			return res.status(400).json({ success: false, error: error.message });
+		}
+	},
+	onDeleteProfile: async (req: any, res: any) => {
+		try {
+			let { profileId } = req.body;
+			const updatedUser = await User.deleteProfile(req.userId, profileId);
+			return res.status(200).json({ success: true, user: updatedUser });
 		} catch (error) {
 			console.log(error);
 			return res.status(400).json({ success: false, error: error.message });
@@ -31,7 +51,9 @@ export default {
 	},
 	onCreateUser: async (req: any, res: any) => {
 		try {
-			await User.createUser(req.body);
+			const userDetails = req.body;
+			userDetails.profiles[0].avatar = `Avatar_0${Math.floor(Math.random() * 7) + 1}.png`;
+			await User.createUser(userDetails);
 			return res.status(201).json({ success: true });
 		} catch (error) {
 			console.log(error);
