@@ -11,9 +11,9 @@
     <br /><br />
     <a href="https://roseflix.netlify.app"><strong>View Demo »</strong></a>
     <br /><br />
-    <a href="https://github.com/rosebilag/roseflix/issues">Report Bug</a>
+    <a href="https://github.com/rosebilag/roseflix-backend/issues">Report Bug</a>
     ·
-    <a href="https://github.com/rosebilag/roseflix/issues">Request Feature</a>
+    <a href="https://github.com/rosebilag/roseflix-backend/issues">Request Feature</a>
   </p>
 </p>
 
