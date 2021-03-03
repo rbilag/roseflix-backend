@@ -199,4 +199,4 @@ Project Link: [https://github.com/rosebilag/roseflix-backend](https://github.com
 [heroku-shield]: https://img.shields.io/github/deployments/rosebilag/roseflix-backend/roseflix-backend?style=for-the-badge
 [heroku-url]:https://roseflix-backend.herokuapp.com
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/rosebilag
+[linkedin-url]: https://linkedin.com/in/rosejoybilag
